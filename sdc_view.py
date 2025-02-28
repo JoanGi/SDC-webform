@@ -3,6 +3,8 @@ from dataModel import AST
 from eventHanlder import handle_value_change
 import json
 import datetime
+import urllib.parse
+import os
 
 
 
@@ -19,6 +21,35 @@ def render_sdc():
     ISO3166 = ['Andorra', 'UnitedArabEmirates', 'Afghanistan', 'AntiguaandBarbuda', 'Anguilla', 'Albania', 'Armenia', 'Angola', 'Antarctica', 'Argentina', 'AmericanSamoa', 'Austria', 'Australia', 'Aruba', 'ÅlandIslands', 'Azerbaijan', 'BosniaandHerzegovina', 'Barbados', 'Bangladesh', 'Belgium', 'BurkinaFaso', 'Bulgaria', 'Bahrain', 'Burundi', 'Benin', 'SaintBarthélemy', 'Bermuda', 'BruneiDarussalam', 'Bolivia,PlurinationalStateof', 'Bonaire,SintEustatiusandSaba', 'Brazil', 'Bahamas', 'Bhutan', 'BouvetIsland', 'Botswana', 'Belarus', 'Belize', 'Canada', 'Cocos(Keeling)Islands', 'Congo,DemocraticRepublicofthe', 'CentralAfricanRepublic', 'Congo', 'Switzerland', 'CôtedIvoire', 'CookIslands', 'Chile', 'Cameroon', 'China', 'Colombia', 'CostaRica', 'Cuba', 'CaboVerde', 'Curaçao', 'ChristmasIsland', 'Cyprus', 'Czechia', 'Germany', 'Djibouti', 'Denmark', 'Dominica', 'DominicanRepublic', 'Algeria', 'Ecuador', 'Estonia', 'Egypt', 'WesternSahara', 'Eritrea', 'Spain', 'Ethiopia', 'Finland', 'Fiji', 'FalklandIslands(Malvinas)', 'Micronesia,FederatedStatesof', 'FaroeIslands', 'France', 'Gabon', 'UnitedKingdomofGreatBritainandNorthernIreland', 'Grenada', 'Georgia', 'FrenchGuiana', 'Guernsey', 'Ghana', 'Gibraltar', 'Greenland', 'Gambia', 'Guinea', 'Guadeloupe', 'EquatorialGuinea', 'Greece', 'SouthGeorgiaandtheSouthSandwichIslands', 'Guatemala', 'Guam', 'Guinea-Bissau', 'Guyana', 'HongKong', 'HeardIslandandMcDonaldIslands', 'Honduras', 'Croatia', 'Haiti', 'Hungary', 'Indonesia', 'Ireland', 'Israel', 'IsleofMan', 'India', 'BritishIndianOceanTerritory', 'Iraq', 'Iran,IslamicRepublicof', 'Iceland', 'Italy', 'Jersey', 'Jamaica', 'Jordan', 'Japan', 'Kenya', 'Kyrgyzstan', 'Cambodia', 'Kiribati', 'Comoros', 'SaintKittsandNevis', 'Korea,DemocraticPeoplesRepublicof', 'Korea,Republicof', 'Kuwait', 'CaymanIslands', 'Kazakhstan', 'LaoPeoplesDemocraticRepublic', 'Lebanon', 'SaintLucia', 'Liechtenstein', 'SriLanka', 'Liberia', 'Lesotho', 'Lithuania', 'Luxembourg', 'Latvia', 'Libya', 'Morocco', 'Monaco', 'Moldova,Republicof', 'Montenegro', 'SaintMartin(Frenchpart)', 'Madagascar', 'MarshallIslands', 'NorthMacedonia', 'Mali', 'Myanmar', 'Mongolia', 'Macao', 'NorthernMarianaIslands', 'Martinique', 'Mauritania', 'Montserrat', 'Malta', 'Mauritius', 'Maldives', 'Malawi', 'Mexico', 'Malaysia', 'Mozambique', 'Namibia', 'NewCaledonia', 'Niger', 'NorfolkIsland', 'Nigeria', 'Nicaragua', 'Netherlands,Kingdomofthe', 'Norway', 'Nepal', 'Nauru', 'Niue', 'NewZealand', 'Oman', 'Panama', 'Peru', 'FrenchPolynesia', 'PapuaNewGuinea', 'Philippines', 'Pakistan', 'Poland', 'SaintPierreandMiquelon', 'Pitcairn', 'PuertoRico', 'Palestine,Stateof', 'Portugal', 'Palau', 'Paraguay', 'Qatar', 'Réunion', 'Romania', 'Serbia', 'RussianFederation', 'Rwanda', 'SaudiArabia', 'SolomonIslands', 'Seychelles', 'Sudan', 'Sweden', 'Singapore', 'SaintHelena,AscensionandTristandaCunha', 'Slovenia', 'SvalbardandJanMayen', 'Slovakia', 'SierraLeone', 'SanMarino', 'Senegal', 'Somalia', 'Suriname', 'SouthSudan', 'SaoTomeandPrincipe', 'ElSalvador', 'SintMaarten(Dutchpart)', 'SyrianArabRepublic', 'Eswatini', 'TurksandCaicosIslands', 'Chad', 'FrenchSouthernTerritories', 'Togo', 'Thailand', 'Tajikistan', 'Tokelau', 'Timor-Leste', 'Turkmenistan', 'Tunisia', 'Tonga', 'Türkiye', 'TrinidadandTobago', 'Tuvalu', 'Taiwan,ProvinceofChina', 'Tanzania,UnitedRepublicof', 'Ukraine', 'Uganda', 'UnitedStatesMinorOutlyingIslands', 'UnitedStatesofAmerica', 'Uruguay', 'Uzbekistan', 'HolySee', 'SaintVincentandtheGrenadines', 'Venezuela,BolivarianRepublicof', 'VirginIslands(British)', 'VirginIslands(U.S.)', 'VietNam', 'Vanuatu', 'WallisandFutuna', 'Samoa', 'Yemen', 'Mayotte', 'SouthAfrica', 'Zambia', 'Zimbabwe']
     ISO639 = ['Afar' , 'Abkhazian', 'Avestan' , 'Afrikaans' , 'Akan' , 'Amharic' , 'Aragonese','Arabic','Assamese','Avaric','Aymara','Azerbaijani','Bashkir','Belarusian','Bulgarian','Bislama','Bambara','Bengali','Tibetan','Breton','Bosnian','Catalan-Valencian','Chechen','Chamorro','Corsican','Cree','Czech','ChurchSlavonic-OldSlavonic-OldChurchSlavonic','Chuvash','Welsh','Danish','German','Divehi-Dhivehi-Maldivian','Dzongkha','Ewe','GreekModern','English','Esperanto','Spanish-Castilian','Estonian','Basque','Persian','Fulah','Finnish','Fijian','Faroese','French','WesternFrisian','Irish','Gaelic-ScottishGaelic','Galician','Guarani','Gujarati','Manx','Hausa','Hebrew','Hindi','HiriMotu','Croatian','Haitian-HaitianCreole','Hungarian','Armenian','Herero','Interlingua','Indonesian','Interlingue-Occidental','Igbo','SichuanYi-Nuosu','Inupiaq','Ido','Icelandic','Italian','Inuktitut','Japanese','Javanese','Georgian','Kongo','Kikuyu-Gikuyu','Kuanyama-Kwanyama','Kazakh','Kalaallisut-Greenlandic','CentralKhmer','Kannada','Korean','Kanuri','Kashmiri','Kurdish','Komi','Cornish','Kyrgyz-Kirghiz','Latin','Luxembourgish-Letzeburgesch','Ganda','Limburgan-Limburger-Limburgish','Lingala','Lao','Lithuanian','Luba-Katanga','Latvian','Malagasy','Marshallese','Maori','Macedonian','Malayalam','Mongolian','Marathi','Malay','Maltese','Burmese','Nauru','NorwegianBokmål','NorthNdebele','Nepali','Ndonga','Dutch-Flemish','NorwegianNynorsk','Norwegian','SouthNdebele','Navajo-Navaho','Chichewa-Chewa-Nyanja','Occitan','Ojibwa','Oromo','Oriya','Ossetian-Ossetic','Punjabi-Panjabi','Pali','Polish','Pashto-Pushto','Portuguese','Quechua','Romansh','Rundi','Romanian-Moldavian-Moldovan','Russian','Kinyarwanda','Sanskrit','Sardinian','Sindhi','NorthernSami','Sango','Sinhala-Sinhalese','Slovak','Slovenian','Samoan','Shona','Somali','Albanian','Serbian','Swati','SouthernSotho','Sundanese','Swedish','Swahili','Tamil','Telugu','Tajik','Thai','Tigrinya','Turkmen','Tagalog','Tswana','Tonga','Turkish','Tsonga','Tatar','Twi','Tahitian','Uighur-Uyghur','Ukrainian','Urdu','Uzbek','Venda','Vietnamese','Volapük','Walloon','Wolof','Xhosa','Yiddish','Yoruba','Zhuang-Chuang','Chinese','Zulu']
   
+
+
+    STATE_FILE = "session_state.json"
+
+    def load_state():
+        """Load state from file and update session_state."""
+        if os.path.exists(STATE_FILE):
+            try:
+                with open(STATE_FILE, "r") as f:
+                    data = json.load(f)
+                st.session_state.update(data)
+            except Exception as e:
+                st.error(f"Error loading state: {e}")
+
+    def save_state():
+        """Save the current session_state to file."""
+        try:
+            # Convert session_state to a regular dict before dumping
+            with open(STATE_FILE, "w") as f:
+                json.dump(dict(st.session_state), f)
+        except Exception as e:
+            st.error(f"Error saving state: {e}")
+
+    # Run this only once on first load.
+    if "loaded" not in st.session_state:
+        load_state()
+        st.session_state["loaded"] = True
+
+
   # Example of how to filter and serialize session state
     def serialize_session_state():
         # Filter out only serializable items (i.e., strings, numbers, lists, dicts)
@@ -58,7 +89,8 @@ def render_sdc():
             key=key,
             value=st.session_state.form_data.get(key, ""),  # Load from session state
             on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1],
-    )
+        )
+        save_state()
         
         # Function to create a text area with caching
     def cached_text_input(label, key, placeholder=""):
@@ -71,7 +103,8 @@ def render_sdc():
             key=key,
             value=st.session_state.form_data.get(key, ""),  # Load from session state
             on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1],
-    )
+        )
+        save_state()
         # Function to create a text area with caching
     def cached_radio_input(label, options, key, help=""):
         if key not in st.session_state.form_data:
@@ -86,6 +119,7 @@ def render_sdc():
             on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1],
             horizontal=True
         )
+        save_state()
 
     def cached_multiple_radio(key,options,label):
 
