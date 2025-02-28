@@ -153,10 +153,10 @@ def render_sdc():
                 st.session_state[agekey] = 0  # default value
             # Display a number input widget
             st.slider(
-                label="The age of the participant:",
-                value=60,
+                label="The average age of the participant:",
                 min_value=0,
                 max_value=120,
+                value=(10,20),
                 key=agekey,
                 on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agekey]}), save_to_cache())[1]
             )
@@ -222,12 +222,13 @@ def render_sdc():
         with governance:
             col1, col2 = st.columns([1, 2])
             with col1:
-                cached_text_input("Project Type", "governance_projectType", "Specify the type of software project (private, public funded, non-profit, driven by an open-source community, etc.)")
-            
+                #cached_text_input("Project Type", "governance_projectType", "Specify the type of software project (private, public funded, non-profit, driven by an open-source community, etc.)")
+                cached_multiple_radio("governance_projectType",["public funded", "research", "private", "private non-profit", "driven by open-source community", "citizen science"],"Specify the type of software project")
             with col2:
                 # Multiple value
                 key = "governance_govProcesses"
                 init_state(key)
+                st.write("Define the set of governament process of your software project")
                 if st.button("Add governament processes"):
                     add_text_area(key)
                 # Loop over the array and create a text area with a remove button for each element
@@ -241,6 +242,7 @@ def render_sdc():
                             remove_text_area(idx,key)
 
             # BODIES
+            st.write("Add the different types of governament bodies of your software project (boards and funders)")
             key = "governance_bodies"
             init_state(key)
             if st.button("Add governament bodies"):
@@ -259,7 +261,7 @@ def render_sdc():
                     with col2:
                         if st.button("Remove", key=f"{key}_remove_{idx}"):
                           remove_text_area(idx,key)
-                        cached_radio_input(f"Body type", ['funders', 'directors', 'administrators', 'other'],  f"{key}_{idx}_type")
+                        cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
 
                     st.text("If participants in the body are individuals please use the individuals tab. If not, leave it blank.")
                 # Button to add a new text area
