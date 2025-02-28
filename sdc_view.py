@@ -5,23 +5,18 @@ import json
 import datetime
 import urllib.parse
 import os
+from markdownGenerator import *
 
 
 
 def render_sdc():
 
 
-    country_options = [
-        "USA", "Canada", "Mexico", "UK", "Germany",
-        "France", "Italy", "Spain", "Australia", "Japan"
-    ]
     EducationalLevelType = ['earlyChildhood','primary','lowerSecondary','upperSecondary','postSecondaryNonTertiary','shortCycleTertiary','bachelorEquivalent','masterEquivalent','doctorateEquivalent']
     SESType = ['upperClass' ,'upperMiddleClass' ,'middleClass' , 'lowerMiddleClass' , 'lowerClass']
     SkillLevelType = ['expert' , 'proficient' , 'advanced' , 'competent' , 'beginner']
     ISO3166 = ['Andorra', 'UnitedArabEmirates', 'Afghanistan', 'AntiguaandBarbuda', 'Anguilla', 'Albania', 'Armenia', 'Angola', 'Antarctica', 'Argentina', 'AmericanSamoa', 'Austria', 'Australia', 'Aruba', 'ÅlandIslands', 'Azerbaijan', 'BosniaandHerzegovina', 'Barbados', 'Bangladesh', 'Belgium', 'BurkinaFaso', 'Bulgaria', 'Bahrain', 'Burundi', 'Benin', 'SaintBarthélemy', 'Bermuda', 'BruneiDarussalam', 'Bolivia,PlurinationalStateof', 'Bonaire,SintEustatiusandSaba', 'Brazil', 'Bahamas', 'Bhutan', 'BouvetIsland', 'Botswana', 'Belarus', 'Belize', 'Canada', 'Cocos(Keeling)Islands', 'Congo,DemocraticRepublicofthe', 'CentralAfricanRepublic', 'Congo', 'Switzerland', 'CôtedIvoire', 'CookIslands', 'Chile', 'Cameroon', 'China', 'Colombia', 'CostaRica', 'Cuba', 'CaboVerde', 'Curaçao', 'ChristmasIsland', 'Cyprus', 'Czechia', 'Germany', 'Djibouti', 'Denmark', 'Dominica', 'DominicanRepublic', 'Algeria', 'Ecuador', 'Estonia', 'Egypt', 'WesternSahara', 'Eritrea', 'Spain', 'Ethiopia', 'Finland', 'Fiji', 'FalklandIslands(Malvinas)', 'Micronesia,FederatedStatesof', 'FaroeIslands', 'France', 'Gabon', 'UnitedKingdomofGreatBritainandNorthernIreland', 'Grenada', 'Georgia', 'FrenchGuiana', 'Guernsey', 'Ghana', 'Gibraltar', 'Greenland', 'Gambia', 'Guinea', 'Guadeloupe', 'EquatorialGuinea', 'Greece', 'SouthGeorgiaandtheSouthSandwichIslands', 'Guatemala', 'Guam', 'Guinea-Bissau', 'Guyana', 'HongKong', 'HeardIslandandMcDonaldIslands', 'Honduras', 'Croatia', 'Haiti', 'Hungary', 'Indonesia', 'Ireland', 'Israel', 'IsleofMan', 'India', 'BritishIndianOceanTerritory', 'Iraq', 'Iran,IslamicRepublicof', 'Iceland', 'Italy', 'Jersey', 'Jamaica', 'Jordan', 'Japan', 'Kenya', 'Kyrgyzstan', 'Cambodia', 'Kiribati', 'Comoros', 'SaintKittsandNevis', 'Korea,DemocraticPeoplesRepublicof', 'Korea,Republicof', 'Kuwait', 'CaymanIslands', 'Kazakhstan', 'LaoPeoplesDemocraticRepublic', 'Lebanon', 'SaintLucia', 'Liechtenstein', 'SriLanka', 'Liberia', 'Lesotho', 'Lithuania', 'Luxembourg', 'Latvia', 'Libya', 'Morocco', 'Monaco', 'Moldova,Republicof', 'Montenegro', 'SaintMartin(Frenchpart)', 'Madagascar', 'MarshallIslands', 'NorthMacedonia', 'Mali', 'Myanmar', 'Mongolia', 'Macao', 'NorthernMarianaIslands', 'Martinique', 'Mauritania', 'Montserrat', 'Malta', 'Mauritius', 'Maldives', 'Malawi', 'Mexico', 'Malaysia', 'Mozambique', 'Namibia', 'NewCaledonia', 'Niger', 'NorfolkIsland', 'Nigeria', 'Nicaragua', 'Netherlands,Kingdomofthe', 'Norway', 'Nepal', 'Nauru', 'Niue', 'NewZealand', 'Oman', 'Panama', 'Peru', 'FrenchPolynesia', 'PapuaNewGuinea', 'Philippines', 'Pakistan', 'Poland', 'SaintPierreandMiquelon', 'Pitcairn', 'PuertoRico', 'Palestine,Stateof', 'Portugal', 'Palau', 'Paraguay', 'Qatar', 'Réunion', 'Romania', 'Serbia', 'RussianFederation', 'Rwanda', 'SaudiArabia', 'SolomonIslands', 'Seychelles', 'Sudan', 'Sweden', 'Singapore', 'SaintHelena,AscensionandTristandaCunha', 'Slovenia', 'SvalbardandJanMayen', 'Slovakia', 'SierraLeone', 'SanMarino', 'Senegal', 'Somalia', 'Suriname', 'SouthSudan', 'SaoTomeandPrincipe', 'ElSalvador', 'SintMaarten(Dutchpart)', 'SyrianArabRepublic', 'Eswatini', 'TurksandCaicosIslands', 'Chad', 'FrenchSouthernTerritories', 'Togo', 'Thailand', 'Tajikistan', 'Tokelau', 'Timor-Leste', 'Turkmenistan', 'Tunisia', 'Tonga', 'Türkiye', 'TrinidadandTobago', 'Tuvalu', 'Taiwan,ProvinceofChina', 'Tanzania,UnitedRepublicof', 'Ukraine', 'Uganda', 'UnitedStatesMinorOutlyingIslands', 'UnitedStatesofAmerica', 'Uruguay', 'Uzbekistan', 'HolySee', 'SaintVincentandtheGrenadines', 'Venezuela,BolivarianRepublicof', 'VirginIslands(British)', 'VirginIslands(U.S.)', 'VietNam', 'Vanuatu', 'WallisandFutuna', 'Samoa', 'Yemen', 'Mayotte', 'SouthAfrica', 'Zambia', 'Zimbabwe']
     ISO639 = ['Afar' , 'Abkhazian', 'Avestan' , 'Afrikaans' , 'Akan' , 'Amharic' , 'Aragonese','Arabic','Assamese','Avaric','Aymara','Azerbaijani','Bashkir','Belarusian','Bulgarian','Bislama','Bambara','Bengali','Tibetan','Breton','Bosnian','Catalan-Valencian','Chechen','Chamorro','Corsican','Cree','Czech','ChurchSlavonic-OldSlavonic-OldChurchSlavonic','Chuvash','Welsh','Danish','German','Divehi-Dhivehi-Maldivian','Dzongkha','Ewe','GreekModern','English','Esperanto','Spanish-Castilian','Estonian','Basque','Persian','Fulah','Finnish','Fijian','Faroese','French','WesternFrisian','Irish','Gaelic-ScottishGaelic','Galician','Guarani','Gujarati','Manx','Hausa','Hebrew','Hindi','HiriMotu','Croatian','Haitian-HaitianCreole','Hungarian','Armenian','Herero','Interlingua','Indonesian','Interlingue-Occidental','Igbo','SichuanYi-Nuosu','Inupiaq','Ido','Icelandic','Italian','Inuktitut','Japanese','Javanese','Georgian','Kongo','Kikuyu-Gikuyu','Kuanyama-Kwanyama','Kazakh','Kalaallisut-Greenlandic','CentralKhmer','Kannada','Korean','Kanuri','Kashmiri','Kurdish','Komi','Cornish','Kyrgyz-Kirghiz','Latin','Luxembourgish-Letzeburgesch','Ganda','Limburgan-Limburger-Limburgish','Lingala','Lao','Lithuanian','Luba-Katanga','Latvian','Malagasy','Marshallese','Maori','Macedonian','Malayalam','Mongolian','Marathi','Malay','Maltese','Burmese','Nauru','NorwegianBokmål','NorthNdebele','Nepali','Ndonga','Dutch-Flemish','NorwegianNynorsk','Norwegian','SouthNdebele','Navajo-Navaho','Chichewa-Chewa-Nyanja','Occitan','Ojibwa','Oromo','Oriya','Ossetian-Ossetic','Punjabi-Panjabi','Pali','Polish','Pashto-Pushto','Portuguese','Quechua','Romansh','Rundi','Romanian-Moldavian-Moldovan','Russian','Kinyarwanda','Sanskrit','Sardinian','Sindhi','NorthernSami','Sango','Sinhala-Sinhalese','Slovak','Slovenian','Samoan','Shona','Somali','Albanian','Serbian','Swati','SouthernSotho','Sundanese','Swedish','Swahili','Tamil','Telugu','Tajik','Thai','Tigrinya','Turkmen','Tagalog','Tswana','Tonga','Turkish','Tsonga','Tatar','Twi','Tahitian','Uighur-Uyghur','Ukrainian','Urdu','Uzbek','Venda','Vietnamese','Volapük','Walloon','Wolof','Xhosa','Yiddish','Yoruba','Zhuang-Chuang','Chinese','Zulu']
-  
-
 
     STATE_FILE = "session_state.json"
 
@@ -447,71 +442,8 @@ def render_sdc():
     st.divider()
     promptTab, impTab = st.tabs(["**Compiled card in markdown**", "**Generated JSON**" ])
     with promptTab:
-            html_str= f"""
-                    # The Software diversity card of {st.session_state["master_title"]}
-                     {st.session_state["master_desc"]} 
-                    ## 🏢 Teams Summary
-
-                    <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Age Range</th>
-                        <th>Ethnicities</th>
-                        <th>Genders</th>
-                        <th>Team Size</th>
-                        <th>Average Tenure</th>
-                        <th>Start Date</th>
-                        <th>Location</th>
-                    </tr>
-                    <tr>
-                        <td><strong>DevelopmentTeam</strong></td>
-                        <td>DevelopmentTeam</td>
-                        <td>25-30</td>
-                        <td>Colombian, Brazilian, Argentinian, French, Spanish, Pakistani, Serbian, Iranian, Moroccan, Italian</td>
-                        <td>Male 80%, Female 20%</td>
-                        <td>15</td>
-                        <td>4.3</td>
-                        <td>11-08-2022</td>
-                        <td>Luxembourg</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Usability Testers</strong></td>
-                        <td>Tester Team</td>
-                        <td>22-24</td>
-                        <td>French</td>
-                        <td>Non-disclosed</td>
-                        <td>18</td>
-                        <td>0.5</td>
-                        <td>17-10-2023</td>
-                        <td>University of Luxembourg</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Computer Science Students</strong></td>
-                        <td>Target Community</td>
-                        <td>18-100</td>
-                        <td>Non-disclosed</td>
-                        <td>Non-disclosed</td>
-                        <td>-</td>
-                        <td>0</td>
-                        <td>-</td>
-                        <td>France & Luxembourg</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Climate Public Servants</strong></td>
-                        <td>Target Community</td>
-                        <td>20-100</td>
-                        <td>Non-disclosed</td>
-                        <td>Non-disclosed</td>
-                        <td>-</td>
-                        <td>3-5</td>
-                        <td>-</td>
-                        <td>Luxembourg</td>
-                    </tr>
-                    </table>
-
-                    ---
-                  """
+            html_str= generate_markdown(st.session_state)
+                    
             # Provide a download button
             st.download_button(
                 label="Download Markdown",
