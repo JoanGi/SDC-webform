@@ -2,6 +2,7 @@ import streamlit as st
 from dataModel import AST
 from eventHanlder import handle_value_change
 import json
+import datetime
 
 
 
@@ -145,6 +146,29 @@ def render_sdc():
         cached_text_input("Organization name", f"{key}_name", "Name or identifier of the organization")
         group(key)
 
+    def team(key):
+        #cached_text_input("Team name", f"{key}_name", "Name or identifier of the team")
+        #cached_text_area("Team description", f"{key}_desc", "Description of the team")
+        agesize = f"{key}_size"
+        if  agesize not in st.session_state:
+            st.session_state[agesize] = 0  # default value
+        # Display a number input widget
+        st.slider(
+            label="The number of participants in the team:",
+            min_value=0,
+            max_value=120,
+            value=(10,20),
+            key=agesize,
+            on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agesize]}), save_to_cache())[1]
+        )
+        colr, coll = st.columns([1, 1])
+        with colr:
+            st.date_input(label="Start date of the team", value=datetime.date(2019, 7, 6),key=f"{key}_startdate",on_change=lambda: (st.session_state.form_data.update({key: st.session_state[f"{key}_startdate"]}), save_to_cache())[1])
+        with coll:
+            st.date_input(label="End date of the team", value=datetime.date(2019, 7, 6),key=f"{key}_enddate",on_change=lambda: (st.session_state.form_data.update({key: st.session_state[f"{key}_enddate"]}), save_to_cache())[1])
+
+        group(key)
+
     def group(key):
         colr, coll = st.columns([1, 1])
         with colr: 
@@ -199,11 +223,68 @@ def render_sdc():
     ##
     ## Title
     ##
-    st.title("The Software Diversity Card :woman_and_man_holding_hands: :memo:")
+    col1, col2 = st.columns([8, 2])
+    with col1:
+        st.title("The Software Diversity Card :woman_and_man_holding_hands: :memo:")
+    with col2:
+        # Theme options
+        themes = {
+            "Cool Blue": {
+                "primaryColor" : "#007ACC",         # A vibrant, clear blue
+                "backgroundColor" : "#E6F7FF" ,       # A light, airy blue for a fresh feel
+                "secondaryBackgroundColor" : "#B3E0FF",  # A gentle pastel blue
+                "textColor" : "#003366" ,             # Deep navy for contrast
+                "font" : "sans serif",
+            },
+            "Light": {
+                "primaryColor": "#4CAF50",
+                "backgroundColor": "#FFFFFF",
+                "secondaryBackgroundColor": "#F0F2F6",
+                "textColor": "#262730",
+            },
+            "Dark": {
+                "primaryColor": "#BB86FC",
+                "backgroundColor": "#121212",
+                "secondaryBackgroundColor": "#1E1E1E",
+                "textColor": "#E0E0E0",
+            },
+            "Solarized": {
+                "primaryColor": "#268BD2",
+                "backgroundColor": "#FDF6E3",
+                "secondaryBackgroundColor": "#EEE8D5",
+                "textColor": "#657B83",
+            }
 
+        }
+
+        # UI to select a theme
+        theme_choice = st.selectbox("Choose a theme:", list(themes.keys()))
+
+        # Apply theme
+        selected_theme = themes[theme_choice]
+        st.markdown(
+            f"""
+            <style>
+                .stApp {{
+                    background-color: {selected_theme["backgroundColor"]};
+                    color: {selected_theme["textColor"]};
+                }}
+                .stButton > button {{
+                    background-color: {selected_theme["primaryColor"]};
+                    color: white;
+                }}
+                .stSidebar {{
+                    background-color: {selected_theme["secondaryBackgroundColor"]};
+                }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
     st.markdown("""\
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
         """)
+   
+
 
     ##
     ## Master info
@@ -276,17 +357,55 @@ def render_sdc():
               
 
         with usageContext:
-            ##
-            ## Age
-            ##
-            age_checkbox = st.radio("Do you want to specifiy the age of your students?", ["No", "Yes"])
-            if age_checkbox == "Yes":
-                age_input = st.slider("Age: (**required**)", min_value=0, max_value=100, step=1)
+            colr, coll = st.columns([1, 1])
+            with colr:
+                key = "socialContext"
+                cached_text_area("Social context",f"{key}_description", "Description of the usage and social context of the app")
+            with coll:
+                cached_multiple_radio(f"{key}_countries",ISO3166,"The countries where the app is intended to be deployed and used")
+                cached_multiple_radio( f"{key}_languages", ISO3166, "The relevant languages for the app usage's context")
+            targetCommunities, adaptations = st.tabs([
+                "Targeted Communities",
+                "Adpatations",
+            ])
+            with targetCommunities:
+                keyTarget = key+"_targetCommunity"
+                cached_text_input("Name",f"{keyTarget}_name", "Name or ID of the target community")
+                cached_text_area("Description",f"{keyTarget}_description", "Description of the target community")
+                group(keyTarget)
+
+            with adaptations:
+                keyAdapt = key+"_adaptation"
+                cached_text_input("Name",f"{keyAdapt}_name", "Name or ID of the adaptation")
+                cached_text_area("Description",f"{keyAdapt}_description", "Description of the adaptation")
 
      
         
         with participants:
-           st.write("the participants")
+           #  Participants
+            st.write("Add the different teams participating the software project")
+            key = "participants"
+            init_state(key)
+            if st.button("Add a team of participants"):
+                add_text_area(key)
+            # Loop over the array and create a text area with a remove button for each element
+          
+            for idx, text in enumerate(st.session_state[key]):
+                # Create two columns: one for the text area, one for the remove button
+                with st.container(border=True):
+                    col1, col2 = st.columns([2, 2])
+                    with col1:
+                        cached_text_input("Team name", f"{key}_{idx}_name", "The name of id of the team")
+                        cached_text_area("Team description", f"{key}_{idx}_description", "A description of the team")
+                    
+
+                    with col2:
+                        if st.button("Remove", key=f"{key}_remove_{idx}"):
+                          remove_text_area(idx,key)
+                        cached_multiple_radio(f"{key}_{idx}_type", ['Development Team', 'NonCoding Contributor', 'Tester Team', 'Public Reporter TEam'], f"Team role type" )
+                    team(f"{key}_{idx}")
+
+
           
 
 
