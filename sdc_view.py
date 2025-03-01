@@ -11,13 +11,14 @@ from markdownGenerator import *
 
 def render_sdc():
 
-
+    ## Constant of the Software diversity card
     EducationalLevelType = ['earlyChildhood','primary','lowerSecondary','upperSecondary','postSecondaryNonTertiary','shortCycleTertiary','bachelorEquivalent','masterEquivalent','doctorateEquivalent']
     SESType = ['upperClass' ,'upperMiddleClass' ,'middleClass' , 'lowerMiddleClass' , 'lowerClass']
     SkillLevelType = ['expert' , 'proficient' , 'advanced' , 'competent' , 'beginner']
     ISO3166 = ['Andorra', 'UnitedArabEmirates', 'Afghanistan', 'AntiguaandBarbuda', 'Anguilla', 'Albania', 'Armenia', 'Angola', 'Antarctica', 'Argentina', 'AmericanSamoa', 'Austria', 'Australia', 'Aruba', 'ÅlandIslands', 'Azerbaijan', 'BosniaandHerzegovina', 'Barbados', 'Bangladesh', 'Belgium', 'BurkinaFaso', 'Bulgaria', 'Bahrain', 'Burundi', 'Benin', 'SaintBarthélemy', 'Bermuda', 'BruneiDarussalam', 'Bolivia,PlurinationalStateof', 'Bonaire,SintEustatiusandSaba', 'Brazil', 'Bahamas', 'Bhutan', 'BouvetIsland', 'Botswana', 'Belarus', 'Belize', 'Canada', 'Cocos(Keeling)Islands', 'Congo,DemocraticRepublicofthe', 'CentralAfricanRepublic', 'Congo', 'Switzerland', 'CôtedIvoire', 'CookIslands', 'Chile', 'Cameroon', 'China', 'Colombia', 'CostaRica', 'Cuba', 'CaboVerde', 'Curaçao', 'ChristmasIsland', 'Cyprus', 'Czechia', 'Germany', 'Djibouti', 'Denmark', 'Dominica', 'DominicanRepublic', 'Algeria', 'Ecuador', 'Estonia', 'Egypt', 'WesternSahara', 'Eritrea', 'Spain', 'Ethiopia', 'Finland', 'Fiji', 'FalklandIslands(Malvinas)', 'Micronesia,FederatedStatesof', 'FaroeIslands', 'France', 'Gabon', 'UnitedKingdomofGreatBritainandNorthernIreland', 'Grenada', 'Georgia', 'FrenchGuiana', 'Guernsey', 'Ghana', 'Gibraltar', 'Greenland', 'Gambia', 'Guinea', 'Guadeloupe', 'EquatorialGuinea', 'Greece', 'SouthGeorgiaandtheSouthSandwichIslands', 'Guatemala', 'Guam', 'Guinea-Bissau', 'Guyana', 'HongKong', 'HeardIslandandMcDonaldIslands', 'Honduras', 'Croatia', 'Haiti', 'Hungary', 'Indonesia', 'Ireland', 'Israel', 'IsleofMan', 'India', 'BritishIndianOceanTerritory', 'Iraq', 'Iran,IslamicRepublicof', 'Iceland', 'Italy', 'Jersey', 'Jamaica', 'Jordan', 'Japan', 'Kenya', 'Kyrgyzstan', 'Cambodia', 'Kiribati', 'Comoros', 'SaintKittsandNevis', 'Korea,DemocraticPeoplesRepublicof', 'Korea,Republicof', 'Kuwait', 'CaymanIslands', 'Kazakhstan', 'LaoPeoplesDemocraticRepublic', 'Lebanon', 'SaintLucia', 'Liechtenstein', 'SriLanka', 'Liberia', 'Lesotho', 'Lithuania', 'Luxembourg', 'Latvia', 'Libya', 'Morocco', 'Monaco', 'Moldova,Republicof', 'Montenegro', 'SaintMartin(Frenchpart)', 'Madagascar', 'MarshallIslands', 'NorthMacedonia', 'Mali', 'Myanmar', 'Mongolia', 'Macao', 'NorthernMarianaIslands', 'Martinique', 'Mauritania', 'Montserrat', 'Malta', 'Mauritius', 'Maldives', 'Malawi', 'Mexico', 'Malaysia', 'Mozambique', 'Namibia', 'NewCaledonia', 'Niger', 'NorfolkIsland', 'Nigeria', 'Nicaragua', 'Netherlands,Kingdomofthe', 'Norway', 'Nepal', 'Nauru', 'Niue', 'NewZealand', 'Oman', 'Panama', 'Peru', 'FrenchPolynesia', 'PapuaNewGuinea', 'Philippines', 'Pakistan', 'Poland', 'SaintPierreandMiquelon', 'Pitcairn', 'PuertoRico', 'Palestine,Stateof', 'Portugal', 'Palau', 'Paraguay', 'Qatar', 'Réunion', 'Romania', 'Serbia', 'RussianFederation', 'Rwanda', 'SaudiArabia', 'SolomonIslands', 'Seychelles', 'Sudan', 'Sweden', 'Singapore', 'SaintHelena,AscensionandTristandaCunha', 'Slovenia', 'SvalbardandJanMayen', 'Slovakia', 'SierraLeone', 'SanMarino', 'Senegal', 'Somalia', 'Suriname', 'SouthSudan', 'SaoTomeandPrincipe', 'ElSalvador', 'SintMaarten(Dutchpart)', 'SyrianArabRepublic', 'Eswatini', 'TurksandCaicosIslands', 'Chad', 'FrenchSouthernTerritories', 'Togo', 'Thailand', 'Tajikistan', 'Tokelau', 'Timor-Leste', 'Turkmenistan', 'Tunisia', 'Tonga', 'Türkiye', 'TrinidadandTobago', 'Tuvalu', 'Taiwan,ProvinceofChina', 'Tanzania,UnitedRepublicof', 'Ukraine', 'Uganda', 'UnitedStatesMinorOutlyingIslands', 'UnitedStatesofAmerica', 'Uruguay', 'Uzbekistan', 'HolySee', 'SaintVincentandtheGrenadines', 'Venezuela,BolivarianRepublicof', 'VirginIslands(British)', 'VirginIslands(U.S.)', 'VietNam', 'Vanuatu', 'WallisandFutuna', 'Samoa', 'Yemen', 'Mayotte', 'SouthAfrica', 'Zambia', 'Zimbabwe']
     ISO639 = ['Afar' , 'Abkhazian', 'Avestan' , 'Afrikaans' , 'Akan' , 'Amharic' , 'Aragonese','Arabic','Assamese','Avaric','Aymara','Azerbaijani','Bashkir','Belarusian','Bulgarian','Bislama','Bambara','Bengali','Tibetan','Breton','Bosnian','Catalan-Valencian','Chechen','Chamorro','Corsican','Cree','Czech','ChurchSlavonic-OldSlavonic-OldChurchSlavonic','Chuvash','Welsh','Danish','German','Divehi-Dhivehi-Maldivian','Dzongkha','Ewe','GreekModern','English','Esperanto','Spanish-Castilian','Estonian','Basque','Persian','Fulah','Finnish','Fijian','Faroese','French','WesternFrisian','Irish','Gaelic-ScottishGaelic','Galician','Guarani','Gujarati','Manx','Hausa','Hebrew','Hindi','HiriMotu','Croatian','Haitian-HaitianCreole','Hungarian','Armenian','Herero','Interlingua','Indonesian','Interlingue-Occidental','Igbo','SichuanYi-Nuosu','Inupiaq','Ido','Icelandic','Italian','Inuktitut','Japanese','Javanese','Georgian','Kongo','Kikuyu-Gikuyu','Kuanyama-Kwanyama','Kazakh','Kalaallisut-Greenlandic','CentralKhmer','Kannada','Korean','Kanuri','Kashmiri','Kurdish','Komi','Cornish','Kyrgyz-Kirghiz','Latin','Luxembourgish-Letzeburgesch','Ganda','Limburgan-Limburger-Limburgish','Lingala','Lao','Lithuanian','Luba-Katanga','Latvian','Malagasy','Marshallese','Maori','Macedonian','Malayalam','Mongolian','Marathi','Malay','Maltese','Burmese','Nauru','NorwegianBokmål','NorthNdebele','Nepali','Ndonga','Dutch-Flemish','NorwegianNynorsk','Norwegian','SouthNdebele','Navajo-Navaho','Chichewa-Chewa-Nyanja','Occitan','Ojibwa','Oromo','Oriya','Ossetian-Ossetic','Punjabi-Panjabi','Pali','Polish','Pashto-Pushto','Portuguese','Quechua','Romansh','Rundi','Romanian-Moldavian-Moldovan','Russian','Kinyarwanda','Sanskrit','Sardinian','Sindhi','NorthernSami','Sango','Sinhala-Sinhalese','Slovak','Slovenian','Samoan','Shona','Somali','Albanian','Serbian','Swati','SouthernSotho','Sundanese','Swedish','Swahili','Tamil','Telugu','Tajik','Thai','Tigrinya','Turkmen','Tagalog','Tswana','Tonga','Turkish','Tsonga','Tatar','Twi','Tahitian','Uighur-Uyghur','Ukrainian','Urdu','Uzbek','Venda','Vietnamese','Volapük','Walloon','Wolof','Xhosa','Yiddish','Yoruba','Zhuang-Chuang','Chinese','Zulu']
 
+    ## The file where the state is
     STATE_FILE = "session_state.json"
 
     def load_state():
@@ -27,6 +28,7 @@ def render_sdc():
                 with open(STATE_FILE, "r") as f:
                     data = json.load(f)
                 st.session_state.update(data)
+                st.session_state['form_data'] = data
             except Exception as e:
                 st.error(f"Error loading state: {e}")
 
@@ -35,7 +37,7 @@ def render_sdc():
         try:
             # Convert session_state to a regular dict before dumping
             with open(STATE_FILE, "w") as f:
-                json.dump(dict(st.session_state), f)
+                json.dump(dict(st.session_state['form_data']), f)
         except Exception as e:
             st.error(f"Error saving state: {e}")
 
@@ -68,11 +70,6 @@ def render_sdc():
         st.cache_data.clear()
         st.cache_data(lambda: st.session_state.form_data)  # Save updated form data
 
-    # Function to save input into cache
-    def save_to_cache():
-        st.cache_data.clear()  # Clear old cache before saving
-        st.cache_data(lambda: st.session_state)  # Save updated state
-
     # Function to create a text area with caching
     def cached_text_area(label, key, placeholder=""):
         if key not in st.session_state.form_data:
@@ -102,9 +99,9 @@ def render_sdc():
         save_state()
         # Function to create a text area with caching
     def cached_radio_input(label, options, key, help=""):
-        if key not in st.session_state.form_data:
-            st.session_state.form_data[key] = ""  # Initialize dynamically
-    
+        if key not in st.session_state.form_data or st.session_state.form_data[key] not in options:
+            st.session_state.form_data[key] = options[0]  # Initialize dynamically
+        
         st.radio(
             label=label,
             options=options,
@@ -121,15 +118,49 @@ def render_sdc():
         # Initialize session state for selected countries if needed
         if key not in st.session_state:
             st.session_state[key] = []
+            default = []
+        else:
+            default = st.session_state[key]
+        
         # Display the multiselect widget
         st.multiselect(
             label,
             options=options,
+            default=default,
             key=key,
             on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1]
         )
         
-        # Function to create a text area with caching
+    def cached_range_input(key, value, label ):
+      
+        if key not in st.session_state.form_data:
+            st.session_state.form_data[key] = value  # Initialize dynamically
+        else:
+            st.session_state[key] = st.session_state.form_data[key]
+        # Display a number input widget
+        st.slider(
+            label=label,
+            min_value=0,
+            max_value=120,
+            value=value,
+            key=key,
+            on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1]
+        )
+        save_state()
+
+    def cached_date_input(label, key):
+
+        if key not in st.session_state:
+            st.session_state[key] = []
+
+        st.date_input(
+            label=label, 
+            value=datetime.date(2019, 7, 6),
+            key=key,
+            on_change=lambda: (st.session_state.form_data.update({key: st.session_state[f"{key}_startdate"]}), save_to_cache())[1]
+            )
+
+
     def participant(key):
         colr, coll = st.columns([1, 1])
         with colr:
@@ -142,7 +173,7 @@ def render_sdc():
             st.number_input(
                 label="The age of the participant:",
                 key=agekey,
-                on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1]
+                on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agekey]}), save_to_cache())[1]
             )
             cached_text_input("Location", f"{key}_location", "The title of the card")
             cached_radio_input("WorkplaceType", ["Presential", "Hybrid", "Remote"],  f"{key}_workdplace", "The title of the card")
@@ -176,43 +207,14 @@ def render_sdc():
         group(key)
 
     def team(key):
-        #cached_text_input("Team name", f"{key}_name", "Name or identifier of the team")
-        #cached_text_area("Team description", f"{key}_desc", "Description of the team")
-        agesize = f"{key}_size"
-        if  agesize not in st.session_state:
-            st.session_state[agesize] = 0  # default value
-        # Display a number input widget
-        st.slider(
-            label="The number of participants in the team:",
-            min_value=0,
-            max_value=120,
-            value=(10,20),
-            key=agesize,
-            on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agesize]}), save_to_cache())[1]
-        )
-        colr, coll = st.columns([1, 1])
-        with colr:
-            st.date_input(label="Start date of the team", value=datetime.date(2019, 7, 6),key=f"{key}_startdate",on_change=lambda: (st.session_state.form_data.update({key: st.session_state[f"{key}_startdate"]}), save_to_cache())[1])
-        with coll:
-            st.date_input(label="End date of the team", value=datetime.date(2019, 7, 6),key=f"{key}_enddate",on_change=lambda: (st.session_state.form_data.update({key: st.session_state[f"{key}_enddate"]}), save_to_cache())[1])
-
+        cached_range_input(f"{key}_size", 0, "The size of the group")
         group(key)
 
     def group(key):
         colr, coll = st.columns([1, 1])
         with colr: 
-            agekey = f"{key}_age"
-            if  agekey not in st.session_state:
-                st.session_state[agekey] = 0  # default value
-            # Display a number input widget
-            st.slider(
-                label="The average age of the participant:",
-                min_value=0,
-                max_value=120,
-                value=(10,20),
-                key=agekey,
-                on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agekey]}), save_to_cache())[1]
-            )
+
+            cached_range_input(f"{key}_age",(10,20), "The age range of the participants")
             cached_text_input("Location", f"{key}_location", "Location of the organization")
             cached_radio_input("WorkplaceType", ["Presential", "Hybrid", "Remote"],  f"{key}_workplace", "The kind of organization")
             cached_text_input("Ethnicities", f"{key}_ethnicities", "Ethinicities present in the organization, comma sepparated ")
@@ -224,7 +226,7 @@ def render_sdc():
             cached_multiple_radio(f"{key}_edlevel",EducationalLevelType,"Educational Level")
             cached_multiple_radio( f"{key}_sociostati", SESType,"Socioeconomic Status")
             cached_multiple_radio( f"{key}_skills", SkillLevelType,"Skill Level")
-            cached_multiple_radio( f"{key}_languages", ISO3166, "Select one or several langauges spoken by the participant:")
+            cached_multiple_radio( f"{key}_languages", ISO639, "Select one or several langauges spoken by the participant:")
                     # Initialize session state for the number input if it doesn't exist
             agekey = f"{key}_tenure"
             if  agekey not in st.session_state:
@@ -234,7 +236,7 @@ def render_sdc():
             st.number_input(
                 label="The professioanl tenure of the participant in years",
                 key=agekey,
-                on_change=lambda: (st.session_state.form_data.update({key: st.session_state[key]}), save_to_cache())[1]
+                on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agekey]}), save_to_cache())[1]
             )
 
     def init_state(key):
@@ -310,7 +312,7 @@ def render_sdc():
             unsafe_allow_html=True
         )
     st.markdown("""\
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+        Welcome to the Software Diversity Card Generator—a form-based application designed to empower you to highlight and promote diversity in software projects. Our innovative tool helps you generate comprehensive diversity cards in both JSON and Markdown formats, offering a transparent overview of the varied teams involved in development and governance, the user groups engaged in testing, and the tailored software adaptations for different social groups. By providing a structured model, an extended JSON syntax, and a toolkit backed by real-world examples, our platform aims to foster inclusive practices that can be embraced by open-source communities, academic journals, and forward-thinking businesses alike.
         """)
    
 
@@ -322,7 +324,8 @@ def render_sdc():
     cached_text_area("A description of the software project", "master_desc", "The title of the card")
 
 
-    with st.expander("**Document the teams and crowds in your software**", expanded=True):
+    with st.container( border=True):
+        st.subheader("Describe the different teams in the software project")
         governance, usageContext, participants = st.tabs([
             "Governance",
             "Usage context",
@@ -339,16 +342,18 @@ def render_sdc():
                 key = "governance_govProcesses"
                 init_state(key)
                 st.write("Define the set of governament process of your software project")
+
                 if st.button("Add governament processes"):
                     add_text_area(key)
                 # Loop over the array and create a text area with a remove button for each element
-                for idx, text in enumerate(st.session_state[key]):
+                for idx, processes in enumerate(st.session_state[key]):
                     # Create two columns: one for the text area, one for the remove button
                     col1, col2 = st.columns([6, 1])
                     with col1:
                         cached_text_area(f"Governament process {idx + 1}", f"governance_govProcesses{idx}", "Specific the governance rules of the software project. For instance, the funders, or the role and the relation between the different bodies that governs the software.")
                     with col2:
-                        if st.button("Remove", key=f"{key}_remove_{idx}"):
+                       # print(st.session_state['governance_govProcesses_remove_0'])
+                        if st.button("Remove", key=f"remove_{key}_{idx}"):
                             remove_text_area(idx,key)
 
             # BODIES
@@ -370,21 +375,20 @@ def render_sdc():
 
                     with col2:
                         if st.button("Remove", key=f"{key}_remove_{idx}"):
-                          remove_text_area(idx,key)
+                          remove_text_area(idx,f"{key}_remove_{idx}")
                         cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
 
-                    st.text("If participants in the body are individuals please use the individuals tab. If not, leave it blank.")
-                # Button to add a new text area
-                    org, individual = st.tabs([
-                            "Organization",
-                            "Individual",
-                        ])
-                    with individual:
-                        participant(f"{key}_{idx}_participant")
-                    with org:
-                        organization(f"{key}_{idx}_organization")
+                    with  st.expander("If needed provide detailed information about the organizations or individuals involved in the governance", expanded=False):
+                    # Button to add a new text area
+                        org, individual = st.tabs([
+                                "Organization",
+                                "Individual",
+                            ])
+                        with individual:
+                            participant(f"{key}_{idx}_participant")
+                        with org:
+                            organization(f"{key}_{idx}_organization")
               
-
         with usageContext:
             colr, coll = st.columns([1, 1])
             with colr:
@@ -392,7 +396,7 @@ def render_sdc():
                 cached_text_area("Social context",f"{key}_description", "Description of the usage and social context of the app")
             with coll:
                 cached_multiple_radio(f"{key}_countries",ISO3166,"The countries where the app is intended to be deployed and used")
-                cached_multiple_radio( f"{key}_languages", ISO3166, "The relevant languages for the app usage's context")
+                cached_multiple_radio( f"{key}_languages", ISO639, "The relevant languages for the app usage's context")
             targetCommunities, adaptations = st.tabs([
                 "Targeted Communities",
                 "Adpatations",
@@ -406,9 +410,7 @@ def render_sdc():
             with adaptations:
                 keyAdapt = key+"_adaptation"
                 cached_text_input("Name",f"{keyAdapt}_name", "Name or ID of the adaptation")
-                cached_text_area("Description",f"{keyAdapt}_description", "Description of the adaptation")
-
-     
+                cached_text_area("Description",f"{keyAdapt}_description", "Description of the adaptation")  
         
         with participants:
            #  Participants
@@ -430,38 +432,39 @@ def render_sdc():
 
                     with col2:
                         if st.button("Remove", key=f"{key}_remove_{idx}"):
-                          remove_text_area(idx,key)
+                          remove_text_area(idx,f"{key}_remove_{idx}")
                         cached_multiple_radio(f"{key}_{idx}_type", ['Development Team', 'NonCoding Contributor', 'Tester Team', 'Public Reporter TEam'], f"Team role type" )
                     team(f"{key}_{idx}")
 
 
-          
-
-
+        
     ## Showing the generated card and the generated JSON
     st.divider()
-    promptTab, impTab = st.tabs(["**Compiled card in markdown**", "**Generated JSON**" ])
-    with promptTab:
-            html_str= generate_markdown(st.session_state)
-                    
+    st.subheader("The generated card")
+    markDownTab, jsonTab = st.tabs(["**Compiled card in markdown**", "**Generated JSON**" ])
+    with markDownTab:
+   
             # Provide a download button
             st.download_button(
                 label="Download Markdown",
-                data=html_str,
+                data=generate_markdown(st.session_state),
                 file_name="SoftareDiveristyCard.md",
                 mime="text/markdown"
             )
-            st.markdown(html_str, unsafe_allow_html=True)
-    with impTab:
+            st.text("Preview:")
+            st.markdown(generate_markdown(st.session_state), unsafe_allow_html=True)
+    with jsonTab:
 
             # Convert the session state to a JSON string
             session_state_json = json.dumps(serialize_session_state(), indent=4)
             st.download_button(
                 label="Download JSON",
                 data=session_state_json,
-                file_name="SoftareDiveristyCard.json",
+                file_name=f"{st.session_state["master_title"]}_diveristy_card.json",
                 mime="application/json"
             )
             # Display the session state as pretty JSON
-            st.json(serialize_session_state())
+            #st.json(serialize_session_state())
+            st.text("Preview:")
+            st.json(st.session_state["form_data"])
          
