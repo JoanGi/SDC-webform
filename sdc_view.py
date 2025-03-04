@@ -1,4 +1,4 @@
-import streamlit as stgit 
+import streamlit as st
 import json
 import datetime
 import urllib.parse
