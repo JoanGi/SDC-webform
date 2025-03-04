@@ -6,6 +6,7 @@ import datetime
 import urllib.parse
 import os
 from markdownGenerator import *
+from jsonGenerator import *
 
 
 
@@ -256,22 +257,23 @@ def render_sdc():
     ##
     col1, col2 = st.columns([8, 2])
     with col1:
-        st.title("The Software Diversity Card :woman_and_man_holding_hands: :memo:")
+        st.title("The Software Diversity Card Generator :busts_in_silhouette: ")
     with col2:
         # Theme options
         themes = {
+      
+            "Light": {
+                "primaryColor": "#4CAF50",
+                "backgroundColor": "#FFFFFF",
+                "secondaryBackgroundColor": "#F0F2F6",
+                "textColor": "#262730",
+            },
             "Cool Blue": {
                 "primaryColor" : "#007ACC",         # A vibrant, clear blue
                 "backgroundColor" : "#E6F7FF" ,       # A light, airy blue for a fresh feel
                 "secondaryBackgroundColor" : "#B3E0FF",  # A gentle pastel blue
                 "textColor" : "#003366" ,             # Deep navy for contrast
                 "font" : "sans serif",
-            },
-            "Light": {
-                "primaryColor": "#4CAF50",
-                "backgroundColor": "#FFFFFF",
-                "secondaryBackgroundColor": "#F0F2F6",
-                "textColor": "#262730",
             },
             "Dark": {
                 "primaryColor": "#BB86FC",
@@ -333,11 +335,11 @@ def render_sdc():
         ])
 
         with governance:
-            col1, col2 = st.columns([1, 2])
-            with col1:
+            col1, col2 = st.columns([3, 2])
+            with col2:
                 #cached_text_input("Project Type", "governance_projectType", "Specify the type of software project (private, public funded, non-profit, driven by an open-source community, etc.)")
                 cached_multiple_radio("governance_projectType",["public funded", "research", "private", "private non-profit", "driven by open-source community", "citizen science"],"Specify the type of software project")
-            with col2:
+            with col1:
                 # Multiple value
                 key = "governance_govProcesses"
                 init_state(key)
@@ -346,15 +348,15 @@ def render_sdc():
                 if st.button("Add governament processes"):
                     add_text_area(key)
                 # Loop over the array and create a text area with a remove button for each element
-                for idx, processes in enumerate(st.session_state[key]):
-                    # Create two columns: one for the text area, one for the remove button
-                    col1, col2 = st.columns([6, 1])
-                    with col1:
-                        cached_text_area(f"Governament process {idx + 1}", f"governance_govProcesses{idx}", "Specific the governance rules of the software project. For instance, the funders, or the role and the relation between the different bodies that governs the software.")
-                    with col2:
-                       # print(st.session_state['governance_govProcesses_remove_0'])
-                        if st.button("Remove", key=f"remove_{key}_{idx}"):
-                            remove_text_area(idx,key)
+            for idx, processes in enumerate(st.session_state[key]):
+                # Create two columns: one for the text area, one for the remove button
+                col1, col2 = st.columns([6, 1])
+                with col1:
+                    cached_text_area(f"Governament process {idx + 1}", f"governance_govProcesses_{idx}", "Specific the governance rules of the software project. For instance, the funders, or the role and the relation between the different bodies that governs the software.")
+                with col2:
+                    # print(st.session_state['governance_govProcesses_remove_0'])
+                    if st.button("Remove", key=f"remove_{key}_{idx}"):
+                        remove_text_area(idx,key)
 
             # BODIES
             st.write("Add the different types of governament bodies of your software project (boards and funders)")
@@ -367,16 +369,17 @@ def render_sdc():
             for idx, text in enumerate(st.session_state[key]):
                 # Create two columns: one for the text area, one for the remove button
                 with st.container(border=True):
-                    col1, col2 = st.columns([2, 2])
+                    col1, col2 = st.columns([3, 2])
                     with col1:
                         cached_text_input("Body name", f"{key}_{idx}_name", "The name of id of the body")
                         cached_text_area("Body description", f"{key}_{idx}_description", "A description of the body")
                     
 
                     with col2:
+                        cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
                         if st.button("Remove", key=f"{key}_remove_{idx}"):
                           remove_text_area(idx,f"{key}_remove_{idx}")
-                        cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
+                      
 
                     with  st.expander("If needed provide detailed information about the organizations or individuals involved in the governance", expanded=False):
                     # Button to add a new text area
@@ -465,6 +468,7 @@ def render_sdc():
             )
             # Display the session state as pretty JSON
             #st.json(serialize_session_state())
+            final = unflatten(st.session_state["form_data"])
             st.text("Preview:")
-            st.json(st.session_state["form_data"])
+            st.json(final)
          
