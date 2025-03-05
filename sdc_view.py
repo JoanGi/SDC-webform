@@ -461,7 +461,7 @@ def render_sdc():
             st.download_button(
                 label="Download JSON",
                 data=session_state_json,
-                file_name=f"{st.session_state["master_title"]}_diveristy_card.json",
+                file_name=f"{st.session_state['master_title']}_diveristy_card.json",
                 mime="application/json"
             )
             # Display the session state as pretty JSON
