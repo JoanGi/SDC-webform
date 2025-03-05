@@ -475,11 +475,15 @@ def render_sdc():
     with jsonTab:
 
             # Convert the session state to a JSON string
+            if 'master_title' in st.session_state:
+                filename = f"{st.session_state['master_title']}_diveristy_card.json"
+            else:
+                filename = f"diveristy_card.json"
             session_state_json = json.dumps(serialize_session_state(), indent=4)
             st.download_button(
                 label="Download JSON",
                 data=session_state_json,
-                file_name=f"{st.session_state.form_state['master_title']}_diveristy_card.json",
+                file_name=filename,
                 mime="application/json"
             )
             # Display the session state as pretty JSON
