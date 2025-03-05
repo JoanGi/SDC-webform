@@ -19,10 +19,11 @@ def generate_markdown(state):
     if 'participants' in state:
         for key, participant in state['participants'].items():
             if participant['name']:
+                    description = participant['description'].replace('\\n', '')
                     html_str = html_str + f"""     
     <tr>
         <td><strong>{participant['name']}</strong></td>
-        <td>{participant['description'].replace('\\n', '')}</td>
+        <td>{description}</td>
         """
             if 'type' in participant:
                 html_str = html_str + f"""<td>{participant['type'][0]}</td>"""
@@ -38,10 +39,11 @@ def generate_markdown(state):
     </tr>"""
         ## If target Communities add it
     if state['socialContext']['targetCommunity']['name']:
+                        description = state['socialContext']['targetCommunity']['description'].replace('\\n', '')
                         html_str = html_str + f"""     
 <tr>
 <td><strong>{state['socialContext']['targetCommunity']['name']}</strong></td>
-    <td>{state['socialContext']['targetCommunity']['description'].replace('\\n', '')}</td>
+    <td>{description}</td>
     <td> Targeted Community </td>
     <td>{state['socialContext']['targetCommunity']['age'][0]}-{state['socialContext']['targetCommunity']['age'][1]}</td>
     <td>{state['socialContext']['targetCommunity']['ethnicities']}</td>
@@ -54,10 +56,11 @@ def generate_markdown(state):
         if 'bodies' in state['governance']:
             for key, body in state['governance']["bodies"].items():
                 if body['name']:
+                    description = body['description'].replace('\\n', '')
                     html_str = html_str + f"""     
         <tr>
-        <td><strong>{body['name'].replace('\\n', '')}</strong></td>
-        <td>{body['description'].replace('\\n', '')}</td>"""
+        <td><strong>{body['name']}</strong></td>
+        <td>{description}</td>"""
                 if 'type' in body:
                     html_str = html_str + f"""<td>{body['type'][0]}</td>"""
                 else:
