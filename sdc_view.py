@@ -41,9 +41,9 @@ def render_sdc():
             st.error(f"Error saving state: {e}")
 
     # Run this only once on first load.
-    if "loaded" not in st.session_state:
-        load_state()
-        st.session_state["loaded"] = True
+    #if "loaded" not in st.session_state:
+    #    load_state()
+    #    st.session_state["loaded"] = True
 
 
   # Example of how to filter and serialize session state
@@ -315,8 +315,8 @@ def render_sdc():
         Welcome to the Software Diversity Card Generator—a form-based application designed to empower you to highlight and promote diversity in software projects. Our innovative tool helps you generate comprehensive diversity cards in both JSON and Markdown formats, offering a transparent overview of the varied teams involved in development and governance, the user groups engaged in testing, and the tailored software adaptations for different social groups. By providing a structured model, an extended JSON syntax, and a toolkit backed by real-world examples, our platform aims to foster inclusive practices that can be embraced by open-source communities, academic journals, and forward-thinking businesses alike.
         """)
    
-
-
+    if st.button("Load the Besser's Software Diversity Card example", type="secondary"):
+        load_state()
     ##
     ## Master info
     ##
@@ -443,17 +443,18 @@ def render_sdc():
     st.divider()
     st.subheader("The generated card")
     markDownTab, jsonTab = st.tabs(["**Compiled card in markdown**", "**Generated JSON**" ])
+    unflattenedJson = unflatten(st.session_state["form_data"])
     with markDownTab:
    
             # Provide a download button
             st.download_button(
                 label="Download Markdown",
-                data=generate_markdown(st.session_state),
+                data=generate_markdown(unflattenedJson),
                 file_name="SoftareDiveristyCard.md",
                 mime="text/markdown"
             )
             st.text("Preview:")
-            st.markdown(generate_markdown(st.session_state), unsafe_allow_html=True)
+            st.markdown(generate_markdown(unflattenedJson), unsafe_allow_html=True)
     with jsonTab:
 
             # Convert the session state to a JSON string
@@ -465,8 +466,6 @@ def render_sdc():
                 mime="application/json"
             )
             # Display the session state as pretty JSON
-            #st.json(serialize_session_state())
-            final = unflatten(st.session_state["form_data"])
             st.text("Preview:")
-            st.json(final)
+            st.json(unflattenedJson)
          

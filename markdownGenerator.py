@@ -1,68 +1,88 @@
-def generate_markdown(session_state):
-
+def generate_markdown(state):
+    print(state)
     html_str= f"""
-                    # The Software diversity card of {session_state["master_title"]}
-                     {session_state["master_desc"]} 
-                    ## 🏢 Teams Summary
+# The Software diversity card of {state["master"]["title"]}
+{state["master"]["desc"]} 
+## 🏢 Teams Summary
 
-                    <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Age Range</th>
-                        <th>Ethnicities</th>
-                        <th>Genders</th>
-                        <th>Team Size</th>
-                        <th>Average Tenure</th>
-                        <th>Start Date</th>
-                        <th>Location</th>
-                    </tr>
-                    <tr>
-                        <td><strong>DevelopmentTeam</strong></td>
-                        <td>DevelopmentTeam</td>
-                        <td>25-30</td>
-                        <td>Colombian, Brazilian, Argentinian, French, Spanish, Pakistani, Serbian, Iranian, Moroccan, Italian</td>
-                        <td>Male 80%, Female 20%</td>
-                        <td>15</td>
-                        <td>4.3</td>
-                        <td>11-08-2022</td>
-                        <td>Luxembourg</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Usability Testers</strong></td>
-                        <td>Tester Team</td>
-                        <td>22-24</td>
-                        <td>French</td>
-                        <td>Non-disclosed</td>
-                        <td>18</td>
-                        <td>0.5</td>
-                        <td>17-10-2023</td>
-                        <td>University of Luxembourg</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Computer Science Students</strong></td>
-                        <td>Target Community</td>
-                        <td>18-100</td>
-                        <td>Non-disclosed</td>
-                        <td>Non-disclosed</td>
-                        <td>-</td>
-                        <td>0</td>
-                        <td>-</td>
-                        <td>France & Luxembourg</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Climate Public Servants</strong></td>
-                        <td>Target Community</td>
-                        <td>20-100</td>
-                        <td>Non-disclosed</td>
-                        <td>Non-disclosed</td>
-                        <td>-</td>
-                        <td>3-5</td>
-                        <td>-</td>
-                        <td>Luxembourg</td>
-                    </tr>
-                    </table>
+<table>
+<tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Age Range</th>
+    <th>Ethnicities</th>
+    <th>Genders</th>
+    <th>Team Size</th>
+    <th>Location</th>
+</tr>"""
+    ## If development team addit
+    if 'participants' in state:
+        for key, participant in state['participants'].items():
+            if participant['name']:
+                    html_str = html_str + f"""     
+    <tr>
+        <td><strong>{participant['name']}</strong></td>
+        <td>{participant['description'].replace('\n', '')}</td>
+        """
+            if 'type' in body:
+                html_str = html_str + f"""<td>{body['type'][0]}</td>"""
+            else:
+                html_str = html_str + f"""<td> </td>"""
 
-                    ---
-                  """
+            html_str = html_str + f"""    
+        <td>{participant['age'][0]}-{participant['age'][1]}</td>
+        <td>{participant['ethnicities']}</td>
+        <td>{participant['genders']}</td>
+        <td>{participant['size']}</td>
+        <td>{participant['location']}</td>
+    </tr>"""
+        ## If target Communities add it
+    if state['socialContext']['targetCommunity']['name']:
+                        html_str = html_str + f"""     
+<tr>
+<td><strong>{state['socialContext']['targetCommunity']['name']}</strong></td>
+    <td>{state['socialContext']['targetCommunity']['description'].replace('\n', '')}</td>
+    <td> Targeted Community </td>
+    <td>{state['socialContext']['targetCommunity']['age'][0]}-{state['socialContext']['targetCommunity']['age'][1]}</td>
+    <td>{state['socialContext']['targetCommunity']['ethnicities']}</td>
+    <td>{state['socialContext']['targetCommunity']['genders']}</td>
+    <td> many </td>
+    <td>{state['socialContext']['targetCommunity']['location']}</td>
+</tr>"""
+    ## If bodies add 
+    if 'governance' in state:
+        if 'bodies' in state['governance']:
+            for key, body in state['governance']["bodies"].items():
+                if body['name']:
+                    html_str = html_str + f"""     
+        <tr>
+        <td><strong>{body['name'].replace('\n', '')}</strong></td>
+        <td>{body['description'].replace('\n', '')}</td>"""
+                if 'type' in body:
+                    html_str = html_str + f"""<td>{body['type'][0]}</td>"""
+                else:
+                    html_str = html_str + f"""<td> </td>"""
+                if body['organization']['name']:
+                    html_str = html_str + f""" 
+        <td>{body['organization']['age'][0]}-{body['organization']['age'][1]}</td>
+        <td>{body['organization']['ethnicities']}</td>
+        <td>{body['organization']['genders']}</td>
+        <td> - </td>
+        <td>{body['organization']['location']}</td>
+        </tr>"""    
+            
+                    if body['participant']['name']:
+                        html_str = html_str + f""" 
+        <td>45</td> 
+        <td>{body['participant']['ethincity']}</td>
+        <td>{body['participant']['gender']}</td>
+        <td> - </td>
+        <td>{body['participant']['location']}</td>
+        </tr>"""
+        
+    ## End summary
+    html_str = html_str + f"   </table>"
+
+                   
     return html_str
