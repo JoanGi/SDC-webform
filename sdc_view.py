@@ -20,6 +20,7 @@ def render_sdc():
     ## The file where the state is
     STATE_FILE = "besser_example.json"
     SAVE_FILE = "session_state.json"
+    
 
     def load_state():
         """Load state from file and update session_state."""
@@ -27,9 +28,9 @@ def render_sdc():
             try:
                 with open(STATE_FILE, "r") as f:
                     data = json.load(f)
-                    print(data)
                 st.session_state.update(data)
                 st.session_state['form_data'] = data
+                return unflatten(st.session_state["form_data"])
             except Exception as e:
                 st.error(f"Error loading state: {e}")
 
@@ -66,6 +67,7 @@ def render_sdc():
     if "form_data" not in st.session_state:
         st.session_state.form_data = load_cached_data()
 
+  
     # Function to save to cache when any input changes
     def save_to_cache():
         st.cache_data.clear()
@@ -252,6 +254,10 @@ def render_sdc():
         if key in st.session_state and 0 <= index < len(st.session_state[key]):
             st.session_state[key].pop(index)
             st.rerun() # Rerun to update the interface
+    
+    
+    unflattenedJson = unflatten(st.session_state["form_data"])
+    
     ##
     ## Title
     ##
@@ -325,7 +331,7 @@ def render_sdc():
         """)
     with colt:
         if st.button("Load Besser's diversity card", type="secondary"):
-            load_state()
+            unflattenedJson = load_state()
     ##
     ## Master info
     ##
@@ -348,6 +354,7 @@ def render_sdc():
                 cached_multiple_radio("governance_projectType",["public funded", "research", "private", "private non-profit", "driven by open-source community", "citizen science"],"Specify the type of software project")
             with col1:
                 # Multiple value
+
                 key = "governance_govProcesses"
                 init_state(key)
                 st.write("Define the set of governament process of your software project")
@@ -355,15 +362,16 @@ def render_sdc():
                 if st.button("Add governament processes"):
                     add_text_area(key)
                 # Loop over the array and create a text area with a remove button for each element
-            for idx, processes in enumerate(st.session_state[key]):
-                # Create two columns: one for the text area, one for the remove button
-                col1, col2 = st.columns([6, 1])
-                with col1:
-                    cached_text_area(f"Governament process {idx + 1}", f"governance_govProcesses_{idx}", "Specific the governance rules of the software project. For instance, the funders, or the role and the relation between the different bodies that governs the software.")
-                with col2:
-                    # print(st.session_state['governance_govProcesses_remove_0'])
-                    if st.button("Remove", key=f"remove_{key}_{idx}"):
-                        remove_text_area(idx,key)
+            if 'governance' in unflattenedJson:
+                if 'govProcesses' in unflattenedJson['governance']:
+                    for idx, processes in enumerate(unflattenedJson['governance']['govProcesses']):
+                        # Create two columns: one for the text area, one for the remove button
+                        col1, col2 = st.columns([6, 1])
+                        with col1:
+                            cached_text_area(f"Governament process {idx + 1}", f"governance_govProcesses_{idx}", "Specific the governance rules of the software project. For instance, the funders, or the role and the relation between the different bodies that governs the software.")
+                        with col2:
+                            if st.button("Remove", key=f"remove_{key}_{idx}"):
+                                remove_text_area(idx,key)
 
             # BODIES
             st.write("Add the different types of governament bodies of your software project (boards and funders)")
@@ -372,32 +380,33 @@ def render_sdc():
             if st.button("Add governament bodies"):
                 add_text_area(key)
             # Loop over the array and create a text area with a remove button for each element
-          
-            for idx, text in enumerate(st.session_state[key]):
-                # Create two columns: one for the text area, one for the remove button
-                with st.container(border=True):
-                    col1, col2 = st.columns([3, 2])
-                    with col1:
-                        cached_text_input("Body name", f"{key}_{idx}_name", "The name of id of the body")
-                        cached_text_area("Body description", f"{key}_{idx}_description", "A description of the body")
-                    
+            if 'governance' in unflattenedJson:
+                if 'bodies' in unflattenedJson['governance']:
+                    for idx, text in enumerate(unflattenedJson['governance']['bodies']):
+                        # Create two columns: one for the text area, one for the remove button
+                        with st.container(border=True):
+                            col1, col2 = st.columns([3, 2])
+                            with col1:
+                                cached_text_input("Body name", f"{key}_{idx}_name", "The name of id of the body")
+                                cached_text_area("Body description", f"{key}_{idx}_description", "A description of the body")
+                            
 
-                    with col2:
-                        cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
-                        if st.button("Remove", key=f"{key}_remove_{idx}"):
-                          remove_text_area(idx,f"{key}_remove_{idx}")
-                      
+                            with col2:
+                                cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
+                                if st.button("Remove", key=f"{key}_remove_{idx}"):
+                                    remove_text_area(idx,f"{key}_remove_{idx}")
+                            
 
-                    with  st.expander("If needed provide detailed information about the organizations or individuals involved in the governance", expanded=False):
-                    # Button to add a new text area
-                        org, individual = st.tabs([
-                                "Organization",
-                                "Individual",
-                            ])
-                        with individual:
-                            participant(f"{key}_{idx}_participant")
-                        with org:
-                            organization(f"{key}_{idx}_organization")
+                            with  st.expander("If needed provide detailed information about the organizations or individuals involved in the governance", expanded=False):
+                            # Button to add a new text area
+                                org, individual = st.tabs([
+                                        "Organization",
+                                        "Individual",
+                                    ])
+                                with individual:
+                                    participant(f"{key}_{idx}_participant")
+                                with org:
+                                    organization(f"{key}_{idx}_organization")
               
         with usageContext:
             colr, coll = st.columns([1, 1])
@@ -430,21 +439,21 @@ def render_sdc():
             if st.button("Add a team of participants"):
                 add_text_area(key)
             # Loop over the array and create a text area with a remove button for each element
-          
-            for idx, text in enumerate(st.session_state[key]):
-                # Create two columns: one for the text area, one for the remove button
-                with st.container(border=True):
-                    col1, col2 = st.columns([2, 2])
-                    with col1:
-                        cached_text_input("Team name", f"{key}_{idx}_name", "The name of id of the team")
-                        cached_text_area("Team description", f"{key}_{idx}_description", "A description of the team")
-                    
+            if 'participants' in unflattenedJson:
+                for idx, text in enumerate(unflattenedJson['participants']):
+                    # Create two columns: one for the text area, one for the remove button
+                    with st.container(border=True):
+                        col1, col2 = st.columns([2, 2])
+                        with col1:
+                            cached_text_input("Team name", f"{key}_{idx}_name", "The name of id of the team")
+                            cached_text_area("Team description", f"{key}_{idx}_description", "A description of the team")
+                        
 
-                    with col2:
-                        if st.button("Remove", key=f"{key}_remove_{idx}"):
-                          remove_text_area(idx,f"{key}_remove_{idx}")
-                        cached_multiple_radio(f"{key}_{idx}_type", ['Development Team', 'NonCoding Contributor', 'Tester Team', 'Public Reporter TEam'], f"Team role type" )
-                    team(f"{key}_{idx}")
+                        with col2:
+                            if st.button("Remove", key=f"{key}_remove_{idx}"):
+                                remove_text_area(idx,f"{key}_remove_{idx}")
+                            cached_multiple_radio(f"{key}_{idx}_type", ['Development Team', 'NonCoding Contributor', 'Tester Team', 'Public Reporter TEam'], f"Team role type" )
+                        team(f"{key}_{idx}")
 
 
         
