@@ -1,5 +1,4 @@
 def generate_markdown(state):
-    print(state)
     html_str= f"""
 # The Software diversity card of {state["master"]["title"]}
 {state["master"]["desc"]} 
@@ -25,8 +24,8 @@ def generate_markdown(state):
         <td><strong>{participant['name']}</strong></td>
         <td>{participant['description'].replace('\n', '')}</td>
         """
-            if 'type' in body:
-                html_str = html_str + f"""<td>{body['type'][0]}</td>"""
+            if 'type' in participant:
+                html_str = html_str + f"""<td>{participant['type'][0]}</td>"""
             else:
                 html_str = html_str + f"""<td> </td>"""
 
@@ -72,7 +71,7 @@ def generate_markdown(state):
         <td>{body['organization']['location']}</td>
         </tr>"""    
             
-                    if body['participant']['name']:
+                if body['participant']['name']:
                         html_str = html_str + f""" 
         <td>45</td> 
         <td>{body['participant']['ethincity']}</td>

@@ -18,7 +18,8 @@ def render_sdc():
     ISO639 = ['Afar' , 'Abkhazian', 'Avestan' , 'Afrikaans' , 'Akan' , 'Amharic' , 'Aragonese','Arabic','Assamese','Avaric','Aymara','Azerbaijani','Bashkir','Belarusian','Bulgarian','Bislama','Bambara','Bengali','Tibetan','Breton','Bosnian','Catalan-Valencian','Chechen','Chamorro','Corsican','Cree','Czech','ChurchSlavonic-OldSlavonic-OldChurchSlavonic','Chuvash','Welsh','Danish','German','Divehi-Dhivehi-Maldivian','Dzongkha','Ewe','GreekModern','English','Esperanto','Spanish-Castilian','Estonian','Basque','Persian','Fulah','Finnish','Fijian','Faroese','French','WesternFrisian','Irish','Gaelic-ScottishGaelic','Galician','Guarani','Gujarati','Manx','Hausa','Hebrew','Hindi','HiriMotu','Croatian','Haitian-HaitianCreole','Hungarian','Armenian','Herero','Interlingua','Indonesian','Interlingue-Occidental','Igbo','SichuanYi-Nuosu','Inupiaq','Ido','Icelandic','Italian','Inuktitut','Japanese','Javanese','Georgian','Kongo','Kikuyu-Gikuyu','Kuanyama-Kwanyama','Kazakh','Kalaallisut-Greenlandic','CentralKhmer','Kannada','Korean','Kanuri','Kashmiri','Kurdish','Komi','Cornish','Kyrgyz-Kirghiz','Latin','Luxembourgish-Letzeburgesch','Ganda','Limburgan-Limburger-Limburgish','Lingala','Lao','Lithuanian','Luba-Katanga','Latvian','Malagasy','Marshallese','Maori','Macedonian','Malayalam','Mongolian','Marathi','Malay','Maltese','Burmese','Nauru','NorwegianBokmål','NorthNdebele','Nepali','Ndonga','Dutch-Flemish','NorwegianNynorsk','Norwegian','SouthNdebele','Navajo-Navaho','Chichewa-Chewa-Nyanja','Occitan','Ojibwa','Oromo','Oriya','Ossetian-Ossetic','Punjabi-Panjabi','Pali','Polish','Pashto-Pushto','Portuguese','Quechua','Romansh','Rundi','Romanian-Moldavian-Moldovan','Russian','Kinyarwanda','Sanskrit','Sardinian','Sindhi','NorthernSami','Sango','Sinhala-Sinhalese','Slovak','Slovenian','Samoan','Shona','Somali','Albanian','Serbian','Swati','SouthernSotho','Sundanese','Swedish','Swahili','Tamil','Telugu','Tajik','Thai','Tigrinya','Turkmen','Tagalog','Tswana','Tonga','Turkish','Tsonga','Tatar','Twi','Tahitian','Uighur-Uyghur','Ukrainian','Urdu','Uzbek','Venda','Vietnamese','Volapük','Walloon','Wolof','Xhosa','Yiddish','Yoruba','Zhuang-Chuang','Chinese','Zulu']
 
     ## The file where the state is
-    STATE_FILE = "session_state.json"
+    STATE_FILE = "besser_example.json"
+    SAVE_FILE = "session_state.json"
 
     def load_state():
         """Load state from file and update session_state."""
@@ -26,6 +27,7 @@ def render_sdc():
             try:
                 with open(STATE_FILE, "r") as f:
                     data = json.load(f)
+                    print(data)
                 st.session_state.update(data)
                 st.session_state['form_data'] = data
             except Exception as e:
@@ -35,7 +37,7 @@ def render_sdc():
         """Save the current session_state to file."""
         try:
             # Convert session_state to a regular dict before dumping
-            with open(STATE_FILE, "w") as f:
+            with open(SAVE_FILE, "w") as f:
                 json.dump(dict(st.session_state['form_data']), f)
         except Exception as e:
             st.error(f"Error saving state: {e}")
@@ -311,12 +313,19 @@ def render_sdc():
             """,
             unsafe_allow_html=True
         )
+    
     st.markdown("""\
         Welcome to the Software Diversity Card Generator—a form-based application designed to empower you to highlight and promote diversity in software projects. Our innovative tool helps you generate comprehensive diversity cards in both JSON and Markdown formats, offering a transparent overview of the varied teams involved in development and governance, the user groups engaged in testing, and the tailored software adaptations for different social groups. By providing a structured model, an extended JSON syntax, and a toolkit backed by real-world examples, our platform aims to foster inclusive practices that can be embraced by open-source communities, academic journals, and forward-thinking businesses alike.
         """)
-   
-    if st.button("Load the Besser's Software Diversity Card example", type="secondary"):
-        load_state()
+    colp, colt, = st.columns([3,7])
+
+    with colp:
+        st.markdown("""\
+        Want to see **what it is possible? See an example!**  
+        """)
+    with colt:
+        if st.button("Load Besser's diversity card", type="secondary"):
+            load_state()
     ##
     ## Master info
     ##
