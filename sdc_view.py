@@ -243,16 +243,16 @@ def render_sdc():
             )
 
     def init_state(key):
-        if key not in st.session_state:
-            st.session_state[key] = []
+        if key not in st.session_state.form_data:
+            st.session_state.form_data[key] = []
 
     def add_text_area(key):
         init_state(key)
-        st.session_state[key].append("")
+        st.session_state.form_data[key].append("")
 
     def remove_text_area(index,key):
-        if key in st.session_state and 0 <= index < len(st.session_state[key]):
-            st.session_state[key].pop(index)
+        if key in st.session_state.form_data and 0 <= index < len(st.session_state.form_data[key]):
+            st.session_state.form_data[key].pop(index)
             st.rerun() # Rerun to update the interface
     
     
@@ -364,7 +364,7 @@ def render_sdc():
                     add_text_area(key)
                 # Loop over the array and create a text area with a remove button for each element
 
-            for idx, processes in enumerate(st.session_state[key]):
+            for idx, processes in enumerate(st.session_state.form_data[key]):
                 # Create two columns: one for the text area, one for the remove button
                 col1, col2 = st.columns([6, 1])
                 with col1:
@@ -381,9 +381,10 @@ def render_sdc():
                 add_text_area(key)
             # Loop over the array and create a text area with a remove button for each element
           
-            for idx, text in enumerate(st.session_state[key]):
+            for idx, text in enumerate(st.session_state.form_data[key]):
                 # Create two columns: one for the text area, one for the remove button
                 with st.container(border=True):
+                    st.subheader(f"Governance body:", divider="gray")
                     col1, col2 = st.columns([3, 2])
                     with col1:
                         cached_text_input("Body name", f"{key}_{idx}_name", "The name of id of the body")
@@ -393,7 +394,7 @@ def render_sdc():
                     with col2:
                         cached_multiple_radio(f"{key}_{idx}_type", ['funders', 'directors', 'administrators', 'other'], f"Body role type" )
                         if st.button("Remove", key=f"{key}_remove_{idx}"):
-                          remove_text_area(idx,f"{key}_remove_{idx}")
+                          remove_text_area(idx,f"{key}")
                       
 
                     with  st.expander("If needed provide detailed information about the organizations or individuals involved in the governance", expanded=False):
@@ -410,7 +411,7 @@ def render_sdc():
         with usageContext:
             colr, coll = st.columns([1, 1])
             with colr:
-                key = "socialContext"
+                key = "usageContext"
                 cached_text_area("Social context",f"{key}_description", "Description of the usage and social context of the app")
             with coll:
                 cached_multiple_radio(f"{key}_countries",ISO3166,"The countries where the app is intended to be deployed and used")
@@ -421,15 +422,31 @@ def render_sdc():
             ])
             with targetCommunities:
                 keyTarget = key+"_targetCommunity"
-                cached_text_input("Name",f"{keyTarget}_name", "Name or ID of the target community")
-                cached_text_area("Description",f"{keyTarget}_description", "Description of the target community")
-                group(keyTarget)
-
+                init_state(keyTarget)
+                if st.button("Add target communities"):
+                    add_text_area(keyTarget)
+            # Loop over the array and create a text area with a remove button for each element
+          
+                for idx, text in enumerate(st.session_state.form_data[keyTarget]):
+                    st.subheader(f"Target community:", divider="gray")
+                    cached_text_input("Name",f"{keyTarget}_{idx}_name", "Name or ID of the target community")
+                    cached_text_area("Description",f"{keyTarget}_{idx}_description", "Description of the target community")
+                    group(f"{keyTarget}_{idx}")
+                    if st.button("Remove", key=f"{keyTarget}_remove_{idx}"):
+                        remove_text_area(idx,keyTarget)
+            # Adaptations
             with adaptations:
                 keyAdapt = key+"_adaptation"
-                cached_text_input("Name",f"{keyAdapt}_name", "Name or ID of the adaptation")
-                cached_text_area("Description",f"{keyAdapt}_description", "Description of the adaptation")  
-        
+                init_state(keyAdapt)
+                if st.button("Add adaptations"):
+                    add_text_area(keyAdapt)
+                for idx, text in enumerate(st.session_state.form_data[keyAdapt]):
+                    st.subheader(f"Adaptation:", divider="gray")
+                    cached_text_input("Name",f"{keyAdapt}_{idx}_name", "Name or ID of the adaptation")
+                    cached_text_area("Description",f"{keyAdapt}_{idx}_description", "Description of the adaptation")  
+                    if st.button("Remove", key=f"{keyAdapt}_remove_{idx}"):
+                        remove_text_area(idx,keyAdapt)
+
         with participants:
            #  Participants
             st.write("Add the different teams participating the software project")
@@ -439,9 +456,10 @@ def render_sdc():
                 add_text_area(key)
             # Loop over the array and create a text area with a remove button for each element
           
-            for idx, text in enumerate(st.session_state[key]):
+            for idx, text in enumerate(st.session_state.form_data[key]):
                 # Create two columns: one for the text area, one for the remove button
                 with st.container(border=True):
+                    st.subheader(f"Participant team:", divider="gray")
                     col1, col2 = st.columns([2, 2])
                     with col1:
                         cached_text_input("Team name", f"{key}_{idx}_name", "The name of id of the team")
@@ -466,12 +484,12 @@ def render_sdc():
             # Provide a download button
             st.download_button(
                 label="Download Markdown",
-                data=generate_markdown(unflattenedJson),
+                data='',
                 file_name="SoftareDiveristyCard.md",
                 mime="text/markdown"
             )
             st.text("Preview:")
-            st.markdown(generate_markdown(unflattenedJson), unsafe_allow_html=True)
+            #st.markdown(generate_markdown(unflattenedJson), unsafe_allow_html=True)
     with jsonTab:
 
             # Convert the session state to a JSON string
