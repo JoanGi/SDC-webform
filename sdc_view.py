@@ -171,12 +171,12 @@ def render_sdc():
             # Initialize session state for the number input if it doesn't exist
             agekey = f"{key}_age"
             if  agekey not in st.session_state:
-                st.session_state[agekey] = 0  # default value
+                st.session_state.form_data[agekey] = 0  # default value
             # Display a number input widget
             st.number_input(
                 label="The age of the participant:",
                 key=agekey,
-                on_change=lambda: (st.session_state.form_data.update({key: st.session_state[agekey]}), save_to_cache())[1]
+                on_change=lambda: (st.session_state.form_data.update({agekey: st.session_state[agekey]}), save_to_cache())[1]
             )
             cached_text_input("Location", f"{key}_location", "The title of the card")
             cached_radio_input("WorkplaceType", ["Presential", "Hybrid", "Remote"],  f"{key}_workdplace", "The title of the card")
@@ -489,7 +489,7 @@ def render_sdc():
                 mime="text/markdown"
             )
             st.text("Preview:")
-            #st.markdown(generate_markdown(unflattenedJson), unsafe_allow_html=True)
+            st.markdown(generate_markdown(unflattenedJson), unsafe_allow_html=True)
     with jsonTab:
 
             # Convert the session state to a JSON string
